@@ -6,6 +6,9 @@ export type TestesDocument = HydratedDocument<Testes>;
 @Schema()
 export class Testes {
   @Prop()
+  id: number;
+
+  @Prop()
   testValue: string;
 
   @Prop()
