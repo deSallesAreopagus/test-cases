@@ -33,7 +33,6 @@ describe('TestesController', () => {
     it('should return all testes', async () => {
       const result: Testes[] = [
         {
-          id: 1,
           testValue: 'Teste',
           otherValue: 1,
         },
