@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TestesService } from './testes.service';
+import { TestesService } from '../testes.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Testes } from './schemas/testes.schema';
+import { Testes } from '../schemas/testes.schema';
 import { NotFoundException } from '@nestjs/common';
 
 const mock = {
+  uniqueValue: 'Test1',
   testValue: 'Teste jest 1',
   otherValue: 123,
 };
@@ -14,8 +15,18 @@ describe('TestesService', () => {
   let service: TestesService;
   let model: Model<Testes>;
   const mockTestes = [
-    { _id: '1', testValue: 'Teste jest 1', otherValue: 123 },
-    { _id: '2', testValue: 'Teste jest 2', otherValue: 234 },
+    {
+      _id: '1',
+      uniqueValue: 'Test1',
+      testValue: 'Teste jest 1',
+      otherValue: 123,
+    },
+    {
+      _id: '2',
+      uniqueValue: 'Test2',
+      testValue: 'Teste jest 2',
+      otherValue: 234,
+    },
   ];
 
   beforeEach(async () => {
@@ -30,8 +41,8 @@ describe('TestesService', () => {
             find: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
-            findByIdAndUpdate: jest.fn(),
-            findByIdAndDelete: jest.fn(),
+            findOneAndUpdate: jest.fn(),
+            findOneAndDelete: jest.fn(),
             exec: jest.fn(),
           },
         },
@@ -49,11 +60,13 @@ describe('TestesService', () => {
   it('should create a new test object', async () => {
     jest.spyOn(model, 'create').mockImplementationOnce(() =>
       Promise.resolve({
+        uniqueValue: 'Test1',
         testValue: 'Teste jest 1',
         otherValue: 123,
       } as any),
     );
     const newTeste = await service.create({
+      uniqueValue: 'Test1',
       testValue: 'Teste jest 1',
       otherValue: 123,
     });
@@ -68,7 +81,7 @@ describe('TestesService', () => {
     expect(testes).toEqual(mockTestes);
   });
 
-  it('should return one test object by ID', async () => {
+  it('should return one test object by uniqueValue', async () => {
     jest.spyOn(model, 'findOne').mockReturnValue({
       exec: jest.fn().mockResolvedValueOnce(mockTestes[0]),
     } as any);
@@ -89,7 +102,7 @@ describe('TestesService', () => {
     const updateTest = { testValue: 'Teste Updated', otherValue: 1 };
     const updatedTest = { _id: '1', ...updateTest };
 
-    jest.spyOn(model, 'findByIdAndUpdate').mockReturnValue({
+    jest.spyOn(model, 'findOneAndUpdate').mockReturnValue({
       exec: jest.fn().mockResolvedValueOnce(updatedTest),
     } as any);
 
@@ -100,10 +113,11 @@ describe('TestesService', () => {
   it('should delete a test object by ID', async () => {
     const mockDeleteResult = {
       _id: '1',
+      uniqueValue: 'Test1',
       testValue: 'Teste jest 1',
       otherValue: 123,
     };
-    jest.spyOn(model, 'findByIdAndDelete').mockReturnValue({
+    jest.spyOn(model, 'findOneAndDelete').mockReturnValue({
       exec: jest.fn().mockReturnValueOnce(mockDeleteResult),
     } as any);
 

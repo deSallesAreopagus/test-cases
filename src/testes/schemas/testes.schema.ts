@@ -5,6 +5,9 @@ export type TestesDocument = HydratedDocument<Testes>;
 
 @Schema()
 export class Testes {
+  @Prop({ unique: true, required: true })
+  uniqueValue: string;
+
   @Prop()
   testValue: string;
 

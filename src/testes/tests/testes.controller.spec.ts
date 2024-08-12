@@ -1,18 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TestesController } from './testes.controller';
-import { TestesService } from './testes.service';
-import { CreateTestesDto } from './dto/create-testes.dto';
+import { TestesController } from '../testes.controller';
+import { TestesService } from '../testes.service';
+import { CreateTestesDto } from '../dto/create-testes.dto';
 
 describe('TestesController', () => {
   let controller: TestesController;
   let service: TestesService;
   const mockTestesDto: CreateTestesDto = {
+    uniqueValue: 'Test1',
     testValue: 'Testes jest 1',
     otherValue: 123,
   };
 
   const mockTeste = {
     _id: '1',
+    uniqueValue: 'Test1',
     testValue: 'Testes jest 1',
     otherValue: 123,
   };
@@ -26,14 +28,17 @@ describe('TestesController', () => {
           useValue: {
             findAll: jest.fn().mockResolvedValue([
               {
+                uniqueValue: 'Test1',
                 testValue: 'Testes jest 1',
                 otherValue: 123,
               },
               {
+                uniqueValue: 'Test2',
                 testValue: 'Testes jest 2',
                 otherValue: 234,
               },
               {
+                uniqueValue: 'Test3',
                 testValue: 'Testes jest 3',
                 otherValue: 345,
               },
@@ -59,14 +64,17 @@ describe('TestesController', () => {
       expect(controller.findAll()).resolves.toEqual([
         {
           testValue: 'Testes jest 1',
+          uniqueValue: 'Test1',
           otherValue: 123,
         },
         {
           testValue: 'Testes jest 2',
+          uniqueValue: 'Test2',
           otherValue: 234,
         },
         {
           testValue: 'Testes jest 3',
+          uniqueValue: 'Test3',
           otherValue: 345,
         },
       ]);
@@ -92,10 +100,11 @@ describe('TestesController', () => {
     });
   });
 
-  describe('findByIdAndDelete', () => {
+  describe('findOneAndDelete', () => {
     it('should delete a teste by ID', async () => {
       const mockDeleteResult = {
         _id: '1',
+        uniqueValue: 'Test1',
         testValue: 'Teste jest 1',
         otherValue: 123,
       };
