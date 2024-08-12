@@ -25,18 +25,21 @@ export class TestesController {
     return this.testesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.testesService.findOne(id);
+  @Get(':uniqueValue')
+  findOne(@Param('uniqueValue') uniqueValue: string) {
+    return this.testesService.findOne(uniqueValue);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTestisDto: UpdateTestesDto) {
-    return this.testesService.update(id, updateTestisDto);
+  @Patch(':uniqueValue')
+  update(
+    @Param('uniqueValue') uniqueValue: string,
+    @Body() updateTestisDto: UpdateTestesDto,
+  ) {
+    return this.testesService.update(uniqueValue, updateTestisDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.testesService.remove(id);
+  @Delete(':uniqueValue')
+  remove(@Param('uniqueValue') uniqueValue: string) {
+    return this.testesService.remove(uniqueValue);
   }
 }

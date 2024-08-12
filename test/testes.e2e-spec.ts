@@ -8,7 +8,23 @@ import { ConfigModule } from '@nestjs/config';
 
 describe('TestesController (e2e)', () => {
   let app: INestApplication;
-  const service = { findAll: () => [{ testValue: 'Teste 2', otherValue: 2 }] };
+  const mockService = {
+    findAll: () => [
+      { testValue: 'Teste 2', otherValue: 2, uniqueValue: 'Test1' },
+    ],
+    findOne: (value: string) => ({
+      testValue: 'Teste 1',
+      otherValue: 1,
+      uniqueValue: value,
+    }),
+    create: (dto: any) => ({ ...dto, id: '1' }),
+    update: (value: string, dto: any) => ({ ...dto, uniqueValue: value }),
+    remove: (value: string) => ({
+      testValue: 'Teste 1',
+      otherValue: 1,
+      uniqueValue: value,
+    }),
+  };
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -19,7 +35,7 @@ describe('TestesController (e2e)', () => {
       ],
     })
       .overrideProvider(TestesService)
-      .useValue(service)
+      .useValue(mockService)
       .compile();
 
     app = moduleRef.createNestApplication();
@@ -34,6 +50,49 @@ describe('TestesController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/testes')
       .expect(200)
-      .expect(service.findAll());
+      .expect(mockService.findAll());
+  });
+
+  it('/POST testes', async () => {
+    const createDto = {
+      testValue: 'Teste Novo',
+      otherValue: 3,
+      uniqueValue: 'Test1',
+    };
+    return request(app.getHttpServer())
+      .post('/testes')
+      .send(createDto)
+      .expect(201)
+      .expect({ ...createDto, id: '1' });
+  });
+
+  it('/GET testes/:id', async () => {
+    const id = '1';
+    return request(app.getHttpServer())
+      .get(`/testes/${id}`)
+      .expect(200)
+      .expect(mockService.findOne(id));
+  });
+
+  it('/PATCH testes/:id', async () => {
+    const uniqueValue = '1';
+    const updateDto = { testValue: 'Teste Atualizado', otherValue: 4 };
+    return request(app.getHttpServer())
+      .patch(`/testes/${uniqueValue}`)
+      .send(updateDto)
+      .expect(200)
+      .expect({ ...updateDto, uniqueValue });
+  });
+
+  it('/DELETE testes/:value', async () => {
+    const mockDeleteTeste = {
+      testValue: 'Teste 1',
+      otherValue: 1,
+      uniqueValue: 'Test1',
+    };
+    return request(app.getHttpServer())
+      .delete(`/testes/${mockDeleteTeste.uniqueValue}`)
+      .expect(200)
+      .expect(mockDeleteTeste);
   });
 });
